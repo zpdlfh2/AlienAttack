@@ -6,17 +6,28 @@ using namespace bangtal;
 using namespace std;
 
 int main() {
+	clock_t start;
 	srand((unsigned int)time(NULL)); // 랜덤 초기화 호출
 	auto sound1 = Sound::create("sound/backgroundsound.mp3");
-	auto sound2 = Sound::create("sound/aliensound1.mp3");
-	auto sound3 = Sound::create("sound/aliensound2.mp3");
+	auto aliensound1 = Sound::create("sound/aliensound1.mp3");
+	auto aliensound2 = Sound::create("sound/aliensound2.mp3");
+	auto aliensound3 = Sound::create("sound/aliensound3.mp3");
+	auto aliensound4 = Sound::create("sound/aliensound4.mp3");
 	auto shotsound1 = Sound::create("sound/shotsound1.mp3");
+	auto shotsound2 = Sound::create("sound/shotsound1.mp3");
 	sound1->play(true);
 	auto sceneX = 550, sceneY = 30;
 
+	ScenePtr lastpage;
+	lastpage = Scene::create("EndGame", "image1/lastpage.png");
 	const auto sceneNum = 5;
 	ScenePtr scene[sceneNum];
 	ObjectPtr startButton[sceneNum];
+	ObjectPtr restartButton[sceneNum];
+	ObjectPtr endButton[sceneNum];
+
+	ScenePtr tutorial1;
+	tutorial1 = Scene::create("Alien Attack", "image1/tutorial1.png");
 
 	for (int i = 0; i < sceneNum; i++) {
 		string stageName = "STAGE " + to_string(i + 1);
@@ -24,11 +35,12 @@ int main() {
 		scene[i] = Scene::create(stageName, fileName);
 		startButton[i] = Object::create("image1/start.png", scene[i], sceneX, sceneY);
 		startButton[i]->setScale(0.1f);
+		restartButton[i] = Object::create("image1/restart.png", scene[i], sceneX, sceneY, false);
 	}
 
 
-//stage1
 
+	//stage1
 	const auto alienNum = 5;
 	auto pointCheck1 = 0;
 
@@ -48,14 +60,14 @@ int main() {
 	for (int i = 0; i < alienNum; i++) {
 		//float n = rand() % 20 / 100;
 		alien[i] = Object::create("image1/alien1.png", scene[0], alienX[i], alienY[i], false);
-		alien[i]->setScale(0.12f);	
+		alien[i]->setScale(0.12f);
 		alien[i]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
 			int j;
 			for (j = 0; j < alienNum; j++) {
 				if (alien[j] == object)
 					break;
 			}
-			sound2->play();
+			aliensound1->play();
 			alien[j]->hide();
 			++pointCheck1;
 			if (pointCheck1 == 4) {
@@ -69,19 +81,21 @@ int main() {
 
 	TimerPtr alienTimer[alienNum];
 	int count[alienNum];
+
 	for (int i = 0; i < alienNum; i++) {
 		count[i] = 0;
 		alienTimer[i] = Timer::create(0.2f);
 	}
 
-	for(int a = 0; a < alienNum; a++){
+	// 외계인 이동
+	for (int a = 0; a < alienNum; a++) {
 		alienTimer[a]->setOnTimerCallback([&](TimerPtr t)->bool {
 			int j;
 			for (j = 0; j < alienNum; j++) {
 				if (alienTimer[j] == t)
 					break;
 			}
-			float n = rand() % 30 ;
+			auto n = rand() % 30;
 			alienX[j] += n;
 			alien[j]->locate(scene[0], alienX[j], alienY[j]);
 			count[j]++;
@@ -97,6 +111,14 @@ int main() {
 				}
 				j++;
 			}
+			if (count[4] < 500) {
+				t->set(0.03f);
+				t->start();
+				//if ((count[4] == 120) && (pointCheck1 <= 3)) {
+				//	showMessage("미션 실패! 클릭 시 스테이지가 다시 시작됩니다!");
+				//	restartButton[0]->show();
+				//}
+			}
 			return true;
 			});
 	}
@@ -105,8 +127,11 @@ int main() {
 		alien[0]->show();
 		alienTimer[0]->start();
 		startButton[0]->hide();
+		start = clock();
 		return true;
 		});
+
+
 
 
 
@@ -138,7 +163,9 @@ int main() {
 				if (alien2[j] == object)
 					break;
 			}
-			sound3->play();
+			int a = rand() % 2;
+			if (a == 0) 	aliensound2->play();
+			if (a == 1) 	aliensound2->play();
 			alien2[j]->hide();
 			++pointCheck2;
 			if (pointCheck2 == 7) {
@@ -164,7 +191,7 @@ int main() {
 				if (alien2Timer[j] == t)
 					break;
 			}
-			float n = rand() % 25;
+			auto n = rand() % 25;
 			alien2X[j] -= n;
 			alien2[j]->locate(scene[1], alien2X[j], alien2Y[j]);
 			count2[j]++;
@@ -180,9 +207,18 @@ int main() {
 				}
 				j++;
 			}
+			if (count2[9] < 500) {
+				t->set(0.03f);
+				t->start();
+				//	if ((count2[9] == 140) && (pointCheck2 <= 7)) {
+				//		showMessage("미션 실패! 클릭 시 스테이지가 다시 시작됩니다!");
+				//		restartButton[1]->show();
+				//	}
+			}
 			return true;
 			});
 	}
+
 
 	startButton[1]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction)-> bool {
 		alien2[0]->show();
@@ -224,14 +260,14 @@ int main() {
 	for (int i = 0; i < alien3Num; i++) {
 		//float n = rand() % 20 / 100;
 		alien3[i] = Object::create("image1/alien3.png", scene[2], alien3X[i], alien3Y[i], false);
-		alien3[i]->setScale(0.18f);
+		alien3[i]->setScale(0.13f);
 		alien3[i]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
 			int j;
 			for (j = 0; j < alien3Num; j++) {
 				if (alien3[j] == object)
 					break;
 			}
-			sound2->play();
+			aliensound3->play();
 			alien3[j]->hide();
 			++pointCheck3;
 			if (pointCheck3 == 10) {
@@ -247,14 +283,14 @@ int main() {
 	for (int i = 0; i < alien4Num; i++) {
 		//float n = rand() % 20 / 100;
 		alien4[i] = Object::create("image1/alien4.png", scene[2], alien4X[i], alien4Y[i], false);
-		alien4[i]->setScale(0.1f);
+		alien4[i]->setScale(0.08f);
 		alien4[i]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
 			int j;
 			for (j = 0; j < alien4Num; j++) {
 				if (alien4[j] == object)
 					break;
 			}
-			sound2->play();
+			aliensound4->play();
 			alien4[j]->hide();
 			++pointCheck3;
 			if (pointCheck3 == 10) {
@@ -287,7 +323,7 @@ int main() {
 				if (alien3Timer[j] == t)
 					break;
 			}
-			float n = rand() % 20;
+			auto n = rand() % 40;
 			alien3X[j] -= n;
 			alien3[j]->locate(scene[2], alien3X[j], alien3Y[j]);
 			count3[j]++;
@@ -306,7 +342,7 @@ int main() {
 			return true;
 			});
 	}
-	
+
 	for (int a = 0; a < alien4Num; a++) {
 		alien4Timer[a]->setOnTimerCallback([&](TimerPtr t)->bool {
 			int j;
@@ -314,7 +350,7 @@ int main() {
 				if (alien4Timer[j] == t)
 					break;
 			}
-			float n = rand() % 20;
+			auto n = rand() % 35;
 			alien4Y[j] -= n;
 			alien4[j]->locate(scene[2], alien4X[j], alien4Y[j]);
 			count4[j]++;
@@ -350,11 +386,14 @@ int main() {
 	//stage 4
 
 	auto pointCheck4 = 0;
-	auto alien5X = 400;
+	auto alien5X = 480;
 	auto alien5Y = 300;
 	auto alien5 = Object::create("image1/alien5.png", scene[3], alien5X, alien5Y, false);
 	alien5->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
-		shotsound1->play();
+		int a = rand() % 2;
+		if (a == 0) 	shotsound1->play();
+		if (a == 1) 	shotsound2->play();
+
 		++pointCheck4;
 		if (pointCheck4 == 10) {
 			showMessage("Stage 4 통과!");
@@ -369,44 +408,20 @@ int main() {
 	alien5Timer = Timer::create(0.5f);
 	auto count5 = 0;
 
-//외계인이 가운데에서 랜덤방향으로 막 움직임 >> 뚜드려패야 스테이지 클리어
+	//외계인이 가운데에서 랜덤방향으로 막 움직임 >> 뚜드려패야 스테이지 클리어
 
 	alien5Timer->setOnTimerCallback([&](TimerPtr t)->bool {
 		int j;
 		//for (j = 0; j < alien5Num; j++) {
 		//	if (alien5Timer[j] == t)
 		//		break;
-		//}
-		int m = rand() % 4;
-		float n = rand() % 40 * 8;
-		if (alien5X < 200) {
-			switch (m) {
-			case 1: alien5X += n; break;
-			case 2: alien5Y -= n; break;
-			case 3: alien5Y += n; break;
-			}
-		}
-		else if (alien5X > 900) {
-			switch (m) {
-			case 0: alien5X -= n; break;
-			case 2: alien5Y -= n; break;
-			case 3: alien5Y += n; break;
-			}
-		}		
-		else if (alien5Y < 200) {
-			switch (m) {
-			case 0: alien5X -= n; break;
-			case 1: alien5X += n; break;
-			case 3: alien5Y += n; break;
-			}
-		}		
-		else if (alien5Y > 450){
-			switch (m) {
-			case 0: alien5X -= n; break;
-			case 1: alien5X += n; break;
-			case 2: alien5Y -= n; break;
-			}
-		}
+		//}		
+		auto m = rand() % 4;
+		auto n = rand() % 40 * 8;
+		if (alien5X < 0) alien5X += n;
+		else if (alien5X > 1000) alien5X -= n;
+		else if (alien5Y < 0) alien5Y += n;
+		else if (alien5Y > 600) alien5Y -= n;
 		else {
 			switch (m) {
 			case 0: alien5X -= n; break;
@@ -415,7 +430,6 @@ int main() {
 			case 3: alien5Y += n; break;
 			}
 		}
-
 
 		alien5->locate(scene[3], alien5X, alien5Y);
 		count5++;
@@ -427,12 +441,173 @@ int main() {
 		});
 
 
-startButton[3]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction)-> bool {
-	alien5->show();
-	alien5Timer->start();
-	startButton[3]->hide();
-	return true;
-	});
+	startButton[3]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction)-> bool {
+		alien5->show();
+		alien5Timer->start();
+		startButton[3]->hide();
+		return true;
+		});
+
+
+
+
+
+	//stage 5
+
+	auto pointCheck5_1 = 0;
+	auto pointCheck5_2 = 0;
+	auto alien6X = 480;
+	auto alien6Y = 300;
+	auto alien6 = Object::create("image1/alien6.png", scene[4], alien6X, alien6Y, false);
+	alien6->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
+		int a = rand() % 2;
+		if (a == 0) 	shotsound1->play();
+		if (a == 1) 	shotsound2->play();
+
+		++pointCheck5_1;
+		if (pointCheck5_1 == 10) {
+			showMessage("외계인 10대 타격 성공!");
+		}
+		if ((pointCheck5_1 == 10) && (pointCheck5_2 == 10)) {
+			int endTime = (float)(clock() - start) / CLOCKS_PER_SEC;
+			if (endTime <= 60) {
+				showMessage("1분 이내 지구 방어 성공!");
+			}
+			else if (endTime <= 120 && endTime > 60) {
+				showMessage("2분 이내 지구방어 성공!");
+			}
+			lastpage->enter();
+		}
+		return true;
+		});
+
+	alien6->setScale(0.20f);
+	TimerPtr alien6Timer;
+	alien6Timer = Timer::create(0.5f);
+	auto count6 = 0;
+
+	//외계인이 가운데에서 랜덤방향으로 움직이면서 크기도 계속 바뀜 >> 뚜드려패야 스테이지 클리어
+
+	alien6Timer->setOnTimerCallback([&](TimerPtr t)->bool {
+		int j;
+		//for (j = 0; j < alien6Num; j++) {
+		//	if (alien6Timer[j] == t)
+		//		break;
+		//}
+		auto m = rand() % 4;
+		auto n = rand() % 40 * 8;
+		if (alien6X < 0) alien6X += n;
+		else if (alien6X > 1000) alien6X -= n;
+		else if (alien6Y < 0) alien6Y += n;
+		else if (alien6Y > 600) alien6Y -= n;
+		else {
+			switch (m) {
+			case 0: alien6X -= n; break;
+			case 1: alien6X += n; break;
+			case 2: alien6Y -= n; break;
+			case 3: alien6Y += n; break;
+			}
+		}
+
+
+		alien6->locate(scene[4], alien6X, alien6Y);
+		count6++;
+		if (count6 < 1000) {
+			t->set(0.2f);
+			t->start();
+		}
+		return true;
+		});
+
+
+	const auto alien7Num = 100;
+	int alien7X[alien7Num];
+	int alien7Y[alien7Num];
+	ObjectPtr alien7[alien7Num];
+
+	// alien7 x축 랜덤좌표 생성
+	for (int i = 0; i < alien7Num; i++) {
+		alien7Y[i] = -100;
+		int n = rand() % 1100;
+		alien7X[i] = n;
+	}
+
+
+	// alien7 생성& 클릭시 포인트 추가
+	for (int i = 0; i < alien7Num; i++) {
+		//float n = rand() % 20 / 100;
+		alien7[i] = Object::create("image1/alien7.png", scene[4], alien7X[i], alien7Y[i], false);
+		alien7[i]->setScale(0.15f);
+		alien7[i]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
+			int j;
+			for (j = 0; j < alien7Num; j++) {
+				if (alien7[j] == object)
+					break;
+			}
+			aliensound4->play();
+			alien7[j]->hide();
+			++pointCheck5_2;
+			if (pointCheck5_2 == 10) {
+				showMessage("우주선 10대 격추 성공!");
+			}
+			if ((pointCheck5_1 == 10) && (pointCheck5_2 == 10)) {
+				int endTime = (float)(clock() - start) / CLOCKS_PER_SEC;
+				if (endTime <= 60) {
+					showMessage("1분 이내 지구 방어 성공!");
+				}
+				else if (endTime <= 120 && endTime > 60) {
+					showMessage("2분 이내 지구방어 성공!");
+				}
+				lastpage->enter();
+			}
+
+			return true;
+			});
+
+
+	}
+	TimerPtr alien7Timer[alien7Num];
+	int count7[alien7Num];
+	for (int i = 0; i < alien7Num; i++) {
+		count7[i] = 0;
+		alien7Timer[i] = Timer::create(0.5f);
+	}
+
+	for (int a = 0; a < alien7Num; a++) {
+		alien7Timer[a]->setOnTimerCallback([&](TimerPtr t)->bool {
+			int j;
+			for (j = 0; j < alien7Num; j++) {
+				if (alien7Timer[j] == t)
+					break;
+			}
+			auto n = rand() % 30;
+			alien7Y[j] += n;
+			alien7[j]->locate(scene[4], alien7X[j], alien7Y[j]);
+			count7[j]++;
+			if (count7[j] < 1000) {
+				t->set(0.03f);
+				t->start();
+			}
+			for (int i = 0; i < alien7Num; i++) {
+				int j = 0;
+				if (count7[j] == 30 * i) {
+					alien7[i]->show();
+					alien7Timer[i]->start();
+				}
+				j++;
+			}
+			return true;
+			});
+	}
+
+	startButton[4]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction)-> bool {
+		alien6->show();
+		alien7[0]->show();
+		alien6Timer->start();
+		alien7Timer[0]->start();
+		startButton[4]->hide();
+		return true;
+		});
 
 	startGame(scene[0]);
 
