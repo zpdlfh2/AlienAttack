@@ -24,10 +24,16 @@ int main() {
 	firstpage = Scene::create("AlienAttack", "image1/firstpage.png");
 	ScenePtr lastpage;
 	lastpage = Scene::create("EndGame", "image1/lastpage.png");
+	auto endButton = Object::create("image1/end.png", lastpage, 1000, 300);
+	endButton->setScale(0.1f);
+	endButton->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
+		endGame();
+		return true;
+		});
+
 	const auto sceneNum = 6;
 	ScenePtr scene[sceneNum];
 	ObjectPtr startButton[sceneNum];
-	ObjectPtr endButton[sceneNum];
 
 	for (int i = 0; i < sceneNum; i++) {
 		string stageName = "STAGE " + to_string(i + 1);
@@ -198,8 +204,8 @@ int main() {
 					break;
 			}
 			int a = rand() % 2;
-			if (a == 0) 	shotsound1->play();
-			if (a == 1) 	shotsound2->play();
+			if (a == 0) shotsound1->play();
+			if (a == 1) shotsound2->play();
 			alien2[j]->hide();
 			++pointCheck2;
 			if (pointCheck2 == 10) {
@@ -240,14 +246,6 @@ int main() {
 				}
 				j++;
 			}
-			if (count2[9] < 500) {
-				t->set(0.03f);
-				t->start();
-				//	if ((count2[9] == 140) && (pointCheck2 <= 7)) {
-				//		showMessage("미션 실패! 클릭 시 스테이지가 다시 시작됩니다!");
-				//		restartButton[1]->show();
-				//	}
-			}
 			return true;
 			});
 	}
@@ -277,14 +275,14 @@ int main() {
 
 	// alien3_1 y축 랜덤좌표 생성
 	for (int i = 0; i < alien3_1Num; i++) {
-		alien3_1X[i] = 1200;
+		alien3_1X[i] = 1400;
 		int n = rand() % 600;
 		alien3_1Y[i] = n;
 	}
 
 	// alien3_2 x축 랜덤좌표 생성
 	for (int i = 0; i < alien3_2Num; i++) {
-		alien3_2Y[i] = 850;
+		alien3_2Y[i] = 900;
 		int n = rand() % 1100;
 		alien3_2X[i] = n;
 	}
@@ -299,7 +297,7 @@ int main() {
 				if (alien3_1[j] == object)
 					break;
 			}
-			aliensound3->play();
+			shotsound1->play();
 			alien3_1[j]->hide();
 			++pointCheck3;
 			if (pointCheck3 == 15) {
@@ -324,7 +322,7 @@ int main() {
 			aliensound4->play();
 			alien3_2[j]->hide();
 			++pointCheck3;
-			if (pointCheck3 == 10) {
+			if (pointCheck3 == 15) {
 				showMessage("Stage 3 통과!");
 				tutorial[3]->enter();
 			}
@@ -353,7 +351,7 @@ int main() {
 				if (alien3_1Timer[j] == t)
 					break;
 			}
-			auto n = rand() % 40;
+			auto n = rand() % 50;
 			alien3_1X[j] -= n;
 			alien3_1[j]->locate(scene[2], alien3_1X[j], alien3_1Y[j]);
 			count3_1[j]++;
@@ -380,7 +378,7 @@ int main() {
 				if (alien3_2Timer[j] == t)
 					break;
 			}
-			auto n = rand() % 35;
+			auto n = rand() % 45;
 			alien3_2Y[j] -= n;
 			alien3_2[j]->locate(scene[2], alien3_2X[j], alien3_2Y[j]);
 			count3_2[j]++;
@@ -519,15 +517,13 @@ int main() {
 	alien5Timer = Timer::create(0.5f);
 	auto count5 = 0;
 
-	//외계인이 가운데에서 랜덤방향으로 막 움직임 >> 뚜드려패야 스테이지 클리어
-
 	alien5Timer->setOnTimerCallback([&](TimerPtr t)->bool {	
 		auto m = rand() % 4;
 		auto n = rand() % 40 * 8;
-		if (alien5X < 0) alien5X += n;
+		if (alien5X < 50) alien5X += n;
 		else if (alien5X > 1000) alien5X -= n;
-		else if (alien5Y < 0) alien5Y += n;
-		else if (alien5Y > 600) alien5Y -= n;
+		else if (alien5Y < 50) alien5Y += n;
+		else if (alien5Y > 550) alien5Y -= n;
 		else {
 			switch (m) {
 			case 0: alien5X -= n; break;
@@ -565,6 +561,7 @@ int main() {
 	auto alien6_1X = 600;
 	auto alien6_1Y = 300;
 	auto alien6_1 = Object::create("image1/alien6_1.png", scene[5], alien6_1X, alien6_1Y, false);
+
 	alien6_1->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
 		int a = rand() % 2;
 		if (a == 0) 	shotsound1->play();
@@ -572,18 +569,18 @@ int main() {
 
 		++pointCheck6_1;
 		if (pointCheck6_1 == 10) {
-			showMessage("외계인 10대 타격 성공!");
+			showMessage("최종 보스 사살 성공!");
 		}
 		if ((pointCheck6_1 == 10) && (pointCheck6_2 == 10)) {
 			float endTime = (float)(clock() - start) / CLOCKS_PER_SEC;
-			if (endTime <= 60) {
-				showMessage("1분 이내 성공! 당신은 LEGEND HERO 입니다!");
-			}
-			else if (endTime > 60 && endTime <= 120 ) {
-				showMessage("2분 이내 성공! 당신은 SUPER HERO 입니다!");
+			if (endTime <= 120) {
+				showMessage("2분 이내 성공! 당신은 LEGEND HERO 입니다!");
 			}
 			else if (endTime > 120 && endTime <= 180 ) {
-				showMessage("3분 이내 성공! 당신은 HERO 입니다!");
+				showMessage("3분 이내 성공! 당신은 SUPER HERO 입니다!");
+			}
+			else if (endTime > 180 && endTime <= 240 ) {
+				showMessage("4분 이내 성공! 당신은 HERO 입니다!");
 			}
 			else {
 				showMessage("지구 방어 성공! 당신은 Warrior 입니다!");
@@ -598,15 +595,13 @@ int main() {
 	alien6_1Timer = Timer::create(0.5f);
 	auto count6_1 = 0;
 
-	//외계인이 가운데에서 랜덤방향으로 움직이면서 크기도 계속 바뀜 >> 뚜드려패야 스테이지 클리어
-
 	alien6_1Timer->setOnTimerCallback([&](TimerPtr t)->bool {
 		auto m = rand() % 4;
 		auto n = rand() % 40 * 8;
-		if (alien6_1X < 0) alien6_1X += n;
+		if (alien6_1X < 50) alien6_1X += n;
 		else if (alien6_1X > 1000) alien6_1X -= n;
-		else if (alien6_1Y < 0) alien6_1Y += n;
-		else if (alien6_1Y > 600) alien6_1Y -= n;
+		else if (alien6_1Y < 50) alien6_1Y += n;
+		else if (alien6_1Y > 550) alien6_1Y -= n;
 		else {
 			switch (m) {
 			case 0: alien6_1X -= n; break;
@@ -615,8 +610,9 @@ int main() {
 			case 3: alien6_1Y += n; break;
 			}
 		}
-
-
+		if (pointCheck6_1 == 10) 
+			alien6_1->hide();
+	
 		alien6_1->locate(scene[5], alien6_1X, alien6_1Y);
 		count6_1++;
 		if (count6_1 < 1000) {
@@ -625,7 +621,6 @@ int main() {
 		}
 		return true;
 		});
-
 
 	const auto alien6_2Num = 100;
 	int alien6_2X[alien6_2Num];
@@ -659,14 +654,19 @@ int main() {
 			if ((pointCheck6_1 == 10) && (pointCheck6_2 == 10)) {
 				float endTime = (float)(clock() - start) / CLOCKS_PER_SEC;
 				if (endTime <= 60) {
-					showMessage("1분 이내 지구 방어 성공!");
+					showMessage("2분 이내 성공! 당신은 LEGEND HERO 입니다!");
 				}
-				else if (endTime <= 120 && endTime > 60) {
-					showMessage("2분 이내 지구방어 성공!");
+				else if (endTime > 60 && endTime <= 120) {
+					showMessage("3분 이내 성공! 당신은 SUPER HERO 입니다!");
+				}
+				else if (endTime > 120 && endTime <= 180) {
+					showMessage("4분 이내 성공! 당신은 HERO 입니다!");
+				}
+				else {
+					showMessage("지구 방어 성공! 당신은 Warrior 입니다!");
 				}
 				lastpage->enter();
 			}
-
 			return true;
 			});
 
@@ -686,7 +686,12 @@ int main() {
 				if (alien6_2Timer[j] == t)
 					break;
 			}
-			auto n = rand() % 30;
+			if (pointCheck6_2 == 10) {
+				for (int i = 0; i < alien6_2Num; i++) {
+					alien6_2[i]->hide();
+				}
+			}
+			auto n = rand() % 40;
 			alien6_2Y[j] += n;
 			alien6_2[j]->locate(scene[5], alien6_2X[j], alien6_2Y[j]);
 			count6_2[j]++;
