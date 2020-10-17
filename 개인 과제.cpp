@@ -8,6 +8,10 @@ using namespace std;
 
 
 int main() {
+	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
+	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
+	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
+
 	clock_t start;
 	srand((unsigned int)time(NULL)); // 랜덤 초기화 호출
 	auto sound1 = Sound::create("sound/backgroundsound.mp3");
