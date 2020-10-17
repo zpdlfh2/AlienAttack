@@ -148,7 +148,7 @@ int main() {
 			alien1X[j] += n;
 			alien1[j]->locate(scene[0], alien1X[j], alien1Y[j]);
 			count1[j]++;
-			if (count1[j] < 500) {
+			if (count1[j] < 5000) {
 				t->set(0.03f);
 				t->start();
 			}
@@ -234,7 +234,7 @@ int main() {
 			alien2X[j] -= n;
 			alien2[j]->locate(scene[1], alien2X[j], alien2Y[j]);
 			count2[j]++;
-			if (count2[j] < 500) {
+			if (count2[j] < 5000) {
 				t->set(0.02f);
 				t->start();
 			}
@@ -355,7 +355,7 @@ int main() {
 			alien3_1X[j] -= n;
 			alien3_1[j]->locate(scene[2], alien3_1X[j], alien3_1Y[j]);
 			count3_1[j]++;
-			if (count3_1[j] < 500) {
+			if (count3_1[j] < 5000) {
 				t->set(0.03f);
 				t->start();
 			}
@@ -466,7 +466,7 @@ int main() {
 					break;
 			}
 			alien4[j]->hide();
-			if (count4[j] < 500) {
+			if (count4[j] < 5000) {
 				t->set(0.3f);
 				t->start();
 			}
@@ -535,7 +535,7 @@ int main() {
 
 		alien5->locate(scene[4], alien5X, alien5Y);
 		count5++;
-		if (count5 < 1000) {
+		if (count5 < 5000) {
 			t->set(0.2f);
 			t->start();
 		}
@@ -615,7 +615,7 @@ int main() {
 	
 		alien6_1->locate(scene[5], alien6_1X, alien6_1Y);
 		count6_1++;
-		if (count6_1 < 1000) {
+		if (count6_1 < 5000) {
 			t->set(0.2f);
 			t->start();
 		}
@@ -695,7 +695,7 @@ int main() {
 			alien6_2Y[j] += n;
 			alien6_2[j]->locate(scene[5], alien6_2X[j], alien6_2Y[j]);
 			count6_2[j]++;
-			if (count6_2[j] < 1000) {
+			if (count6_2[j] < 5000) {
 				t->set(0.03f);
 				t->start();
 			}
