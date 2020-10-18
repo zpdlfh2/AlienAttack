@@ -7,7 +7,7 @@
 *bangtal.msi를 설치한 후 게임을 실행하세요!<br/><br/><br/><br/>
 
 ![tutorial3](https://user-images.githubusercontent.com/61266770/96358636-68491380-1144-11eb-8716-8e86c4bbb3b5.png)
-### - 스테이지마다 출현하는 외계인에 대한 설명이 나옵니다.<br/><br/><br/><br/>
+### - 스테이지마다 출현하는 우주선과 외계인에 대한 설명이 나옵니다.<br/><br/><br/><br/>
 
 ![stage2capture](https://user-images.githubusercontent.com/61266770/96358652-86167880-1144-11eb-8de1-eabea2d8e726.png)
 ### - 순식간에 지나가는 우주선과 외계인을 잘 클릭해서 처치하세요!<br/><br/><br/><br/>
