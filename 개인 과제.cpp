@@ -5,7 +5,18 @@
 using namespace bangtal;
 using namespace std;
 
-
+const auto alien1Num = 100;
+ObjectPtr alien1[alien1Num];
+const auto alien2Num = 100;
+ObjectPtr alien2[alien2Num];
+const auto alien3_1Num = 100;
+ObjectPtr alien3_1[alien3_1Num];
+const auto alien3_2Num = 100;
+ObjectPtr alien3_2[alien3_2Num];
+const auto alien4Num = 100;
+ObjectPtr alien4[alien4Num];
+const auto alien6_2Num = 200;
+ObjectPtr alien6_2[alien6_2Num];
 
 int main() {
 	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
@@ -23,14 +34,21 @@ int main() {
 	auto shotsound2 = Sound::create("sound/shotsound1.mp3");
 	sound1->play(true);
 
-	auto sceneX = 550, sceneY = 30;
-	ScenePtr firstpage;
-	firstpage = Scene::create("AlienAttack", "image1/firstpage.png");
-	ScenePtr lastpage;
-	lastpage = Scene::create("EndGame", "image1/lastpage.png");
-	auto endButton = Object::create("image1/end.png", lastpage, 1000, 300);
-	endButton->setScale(0.1f);
-	endButton->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
+	auto sceneX = 540, sceneY = 30;
+	ScenePtr firstpage = Scene::create("AlienAttack", "image1/firstpage.png");
+	ScenePtr lastpage = Scene::create("EndGame", "image1/lastpage.png");
+	ScenePtr failpage = Scene::create("EndGame", "image1/failpage.png");
+
+	auto endButton1 = Object::create("image1/end.png", lastpage, 1000, 300); //성공 시 마지막 페이지에서 나가는 버튼
+	endButton1->setScale(0.1f);
+	endButton1->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
+		endGame();
+		return true;
+		});
+
+	auto endButton2 = Object::create("image1/end.png", failpage, sceneX, sceneY);  //실패 시 failpage에서 나가는 버튼
+	endButton2->setScale(0.1f);
+	endButton2->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
 		endGame();
 		return true;
 		});
@@ -58,7 +76,7 @@ int main() {
 		string stageName = "Alien Attack ";
 		string fileName = "image1/page" + to_string(i + 1) + ".png";
 		startPage[i] = Scene::create(stageName, fileName);
-		passButton[i] = Object::create("image1/next.png", startPage[i], sceneX, sceneY);
+		passButton[i] = Object::create("image1/next.png", startPage[i], sceneX + 20, sceneY);
 		passButton[i]->setScale(0.1f);
 		passButton[i]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
 			int j;
@@ -80,7 +98,7 @@ int main() {
 		string stageName = "Tutorial " + to_string(i + 1);
 		string fileName = "image1/tutorial" + to_string(i + 1) + ".png";
 		tutorial[i] = Scene::create(stageName, fileName);
-		nextButton[i] = Object::create("image1/next.png", tutorial[i], sceneX, sceneY);
+		nextButton[i] = Object::create("image1/next.png", tutorial[i], sceneX + 20, sceneY);
 		nextButton[i]->setScale(0.1f);
 		nextButton[i]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
 			int j;
@@ -95,12 +113,10 @@ int main() {
 	}
 
 	//stage1
-	const auto alien1Num = 100;
-	auto pointCheck1 = 0;
 
+	auto pointCheck1 = 0;
 	int alien1X[alien1Num];
 	int alien1Y[alien1Num];
-	ObjectPtr alien1[alien1Num];
 
 
 	// 외계인 y축 랜덤좌표 생성
@@ -112,7 +128,6 @@ int main() {
 
 	// 외계인 생성& 클릭시 포인트 추가
 	for (int i = 0; i < alien1Num; i++) {
-		//float n = rand() % 20 / 100;
 		alien1[i] = Object::create("image1/alien1.png", scene[0], alien1X[i], alien1Y[i], false);
 		alien1[i]->setScale(0.12f);
 		alien1[i]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction action)-> bool {
@@ -156,6 +171,9 @@ int main() {
 				t->set(0.03f);
 				t->start();
 			}
+			if((count1[99] > 200) && (pointCheck1 < 5)) {
+				failpage->enter();
+			}
 			for (int i = 0; i < alien1Num; i++) {
 				int j = 0;
 				if (count1[j] == 25 * i) {
@@ -179,15 +197,12 @@ int main() {
 
 
 
-
 	//stage 2
 
-	const auto alien2Num = 100;
-	auto pointCheck2 = 0;
 
+	auto pointCheck2 = 0;
 	int alien2X[alien2Num];
 	int alien2Y[alien2Num];
-	ObjectPtr alien2[alien2Num];
 
 
 	// 우주선 y축 랜덤좌표 생성
@@ -242,6 +257,9 @@ int main() {
 				t->set(0.02f);
 				t->start();
 			}
+			if ((count2[99] > 200) && (pointCheck2 < 10)) {
+				failpage->enter();
+			}
 			for (int i = 0; i < alien2Num; i++) {
 				int j = 0;
 				if (count2[j] == 20 * i) {
@@ -265,17 +283,12 @@ int main() {
 
 	//stage 3
 
-	const auto alien3_1Num = 100;
-	auto pointCheck3 = 0;
 
+	auto pointCheck3 = 0;
 	int alien3_1X[alien3_1Num];
 	int alien3_1Y[alien3_1Num];
-	ObjectPtr alien3_1[alien3_1Num];
-
-	const auto alien3_2Num = 100;
 	int alien3_2X[alien3_2Num];
 	int alien3_2Y[alien3_2Num];
-	ObjectPtr alien3_2[alien3_2Num];
 
 	// alien3_1 y축 랜덤좌표 생성
 	for (int i = 0; i < alien3_1Num; i++) {
@@ -363,6 +376,9 @@ int main() {
 				t->set(0.03f);
 				t->start();
 			}
+			if ((count3_1[99] > 200) && (pointCheck3 < 15)) {
+				failpage->enter();
+			}
 			for (int i = 0; i < alien3_1Num; i++) {
 				int j = 0;
 				if (count3_1[j] == 30 * i) {
@@ -386,9 +402,12 @@ int main() {
 			alien3_2Y[j] -= n;
 			alien3_2[j]->locate(scene[2], alien3_2X[j], alien3_2Y[j]);
 			count3_2[j]++;
-			if (count3_2[j] < 500) {
+			if (count3_2[j] < 5000) {
 				t->set(0.03f);
 				t->start();
+			}
+			if ((count3_2[99] > 200) && (pointCheck3 < 15)) {
+				failpage->enter();
 			}
 			for (int i = 0; i < alien3_2Num; i++) {
 				int j = 0;
@@ -416,12 +435,10 @@ int main() {
 
 	//stage 4
 
-	const auto alien4Num = 100;
-	auto pointCheck4 = 0;
 
+	auto pointCheck4 = 0;
 	int alien4X[alien4Num];
 	int alien4Y[alien4Num];
-	ObjectPtr alien4[alien4Num];
 
 
 	// 외계인 x, y축 랜덤좌표 생성
@@ -474,6 +491,9 @@ int main() {
 				t->set(0.3f);
 				t->start();
 			}
+			if ((count4[99] > 200) && (pointCheck4 < 15)) {
+				failpage->enter();
+			}
 			count4[j]++;
 			for (int i = 0; i < alien4Num; i++) {
 				int j = 0;
@@ -485,7 +505,6 @@ int main() {
 			return true;
 			});
 	}
-
 
 	startButton[3]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction)-> bool {
 		alien4[0]->show();
@@ -543,9 +562,11 @@ int main() {
 			t->set(0.2f);
 			t->start();
 		}
+		if ((count5 > 5000) && (pointCheck5 < 10)) {
+			failpage->enter();
+		}
 		return true;
 		});
-
 
 	startButton[4]->setOnMouseCallback([&](ObjectPtr object, int, int, MouseAction)-> bool {
 		alien5->show();
@@ -623,13 +644,14 @@ int main() {
 			t->set(0.2f);
 			t->start();
 		}
+		if ((count6_1 > 5000) && (pointCheck6_1 < 10)) {
+			failpage->enter();
+		}
 		return true;
 		});
 
-	const auto alien6_2Num = 100;
 	int alien6_2X[alien6_2Num];
 	int alien6_2Y[alien6_2Num];
-	ObjectPtr alien6_2[alien6_2Num];
 
 	// alien6_2 x축 랜덤좌표 생성
 	for (int i = 0; i < alien6_2Num; i++) {
@@ -702,6 +724,9 @@ int main() {
 			if (count6_2[j] < 5000) {
 				t->set(0.03f);
 				t->start();
+			}
+			if ((count6_2[199] > 200) && (pointCheck6_2 < 10)) {
+				failpage->enter();
 			}
 			for (int i = 0; i < alien6_2Num; i++) {
 				int j = 0;
