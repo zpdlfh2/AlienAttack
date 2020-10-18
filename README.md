@@ -15,5 +15,5 @@
 ![stage6capture](https://user-images.githubusercontent.com/61266770/96358665-afcf9f80-1144-11eb-83c9-294cd07b5b00.png)
 ### - 최종 보스까지 갈 수록 난이도는 올라갑니다!<br/><br/><br/><br/>
 
-![page3](https://user-images.githubusercontent.com/61266770/96358680-d4c41280-1144-11eb-9b0b-5a8df62f06a4.png)
+![page3](https://user-images.githubusercontent.com/61266770/96371237-a9b8dd80-119b-11eb-93a5-f8770cc5b59a.png)
 ### LEGEND HERO가 될 때까지 도전해보세요!<br/><br/><br/><br/>
